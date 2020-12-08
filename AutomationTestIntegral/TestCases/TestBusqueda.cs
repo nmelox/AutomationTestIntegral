@@ -9,7 +9,7 @@ namespace AutomationTestIntegral.TestCases
     {
         IWebDriver driver;
         GoogleSearch googleSearch;
-        string searchValue;
+        GoogleResult googleResult;
         string testName;
 
         [SetUp]
@@ -17,20 +17,20 @@ namespace AutomationTestIntegral.TestCases
         {
             driver = Initializer.Initialize_WebDriver(1, "https://www.google.com/");
             googleSearch = new GoogleSearch(driver);
+            googleResult = new GoogleResult(driver);
         }
-
         [Test]
         public void NormalSearch()
         {
-            searchValue = "Disney World";
+            string searchValue = "Disney World";
             Assert.IsTrue(googleSearch.Search(searchValue,false));
             testName = "NormalSearch";
-            Helper.Wait(driver, "Exists", By.PartialLinkText("Walt Disney World Resort in Orlando, Florida"));
+            Helper.Wait(driver, "Exists", Helper.GenerateLocatorElement("Partial", "Walt Disney World Resort in Orlando, Florida"));
         }
         [Test]
         public void LuckySearch()
         {
-            searchValue = "Disney World";
+            string searchValue = "Disney World";
             Assert.IsTrue(googleSearch.Search(searchValue, true));
             testName = "LuckySearch";
             Helper.Wait(driver, 10);
@@ -38,10 +38,20 @@ namespace AutomationTestIntegral.TestCases
         [Test]
         public void PressEnterSearch()
         {
-            searchValue = "Disney World";
+            string searchValue = "Disney World";
             Assert.IsTrue(googleSearch.Search(searchValue));
             testName = "PressEnterSearch";
-            Helper.Wait(driver, By.PartialLinkText("Walt Disney World Resort in Orlando, Florida"));
+            Helper.Wait(driver, Helper.GenerateLocatorElement("Partial", "Walt Disney World Resort in Orlando, Florida"));
+        }
+        [Test]
+        public void SelectOneResult()
+        {
+            string result = "Walt Disney World en Florida - Vacaciones en familia";
+            string searchValue = "Disney World";
+            googleSearch.Search(searchValue);
+            Assert.IsTrue(googleResult.SelectResult(result));
+            testName = "SelectOneResult";
+            Helper.Wait(driver, Helper.GenerateLocatorElement("Id", "findPricesButton"));
         }
 
         [TearDown]

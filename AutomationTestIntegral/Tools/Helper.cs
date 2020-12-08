@@ -35,5 +35,18 @@ namespace AutomationTestIntegral.Tools
             fluentWait.IgnoreExceptionTypes(typeof(NoAlertPresentException));
             fluentWait.Until(x => x.FindElement(locator));
         }
+        public static By GenerateLocatorElement(string locatorType, string value)
+        {
+            By locator = null;
+            if(locatorType == "Id") locator = By.Id(value);
+            if(locatorType == "Name") locator = By.Name(value);
+            if(locatorType == "Partial") locator = By.PartialLinkText(value);
+            if(locatorType == "Link") locator = By.LinkText(value);
+            if(locatorType == "Class") locator = By.ClassName(value);
+            if(locatorType == "Css") locator = By.CssSelector(value);
+            if(locatorType == "Tag") locator = By.TagName(value);
+            if(locatorType == null) locator = By.XPath(value);
+            return locator;
+        }
     }
 }
